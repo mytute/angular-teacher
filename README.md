@@ -51,29 +51,40 @@ ng --version
 
 
 to start new project    
+```shell
 $ ng new <my-app-name>   
-$ ng new --routing=true--style=scss
+$ ng new --routing=true --style=scss
 # --routing=true|false
 # --style=css|scss|sass|less|styl
+```
 
 to open location in VSCODE in terminal
+```shell
 $ code .
+```
 
 to start already created project on root 
-$ ng serve -o   '-o' option for open starting project on browser 
+```shell
+$ ng serve -o  # '-o' option for open starting project on browser 
+```
   
 to create new component    
+```shell
 $ ng generate component <component-name>    
-$ ng g c <component-name>  # short form     
-
+$ ng g c <component-name>  # short form    
+```     
 
 to create new service    
+```shell
 $ ng generate service <service-name>    
 $ ng g s  <service-name>   # short form      
+```     
 
 to create new class   
+```shell
 $ ng generate class <class-name>        
 $ ng g c <class-name>    
+```    
 
 to terminate live development server    
 ctr+c    
@@ -89,12 +100,101 @@ go to /src/app/app.component.ts and create variable
       name = 'tutorial'
    }
 ```  
- 
 ```html
    <h>Angular app {{name}} </h>
 ```  
 
-   
+go to /src/app/app.component.ts     
+show how we can cotomize selectors    
+```typescript   
+
+@Component({
+  selector: 'app-root',
+  templateUrl: '<h1>Angular app </h1>',
+  styleUrls: ['./app.component.scss']
+})
+
+# You can specify more than one styles file in styleUrls it will apply only for this component.    
+
+@Component({
+  selector: 'app-root',
+  template: `<h1>Angular app {{title}}</h1>`,
+  styles: ['h1 { font-weight: normal; }']
+})
+
+@Component({
+  selector: 'app-hero-controls',
+  template: `
+    <style>
+      h1 {
+        background-color: white;
+        border: 1px solid #777;
+      }
+    </style>
+    <h1>Controls</h1>
+    <button type="button" (click)="activate()">Activate</button>
+  `
+})
+
+# you can remove styles and add styles to template    
+
+```   
+show app.component.ts file "app-root" in index.html file and "app-root" on browser inspect.  
+
+
+# Folder struture    
+node_modules : all dependences  
+src : source files   
+src/app : any component, module, service in this foleder   
+src/assets : static assets (images, icons, textfile )
+environments : for environment releted configeration    
+favicon.ico : icon display on browser    
+index.html : all code inject to this file by build angular cli    
+main.ts : entry point / start file    
+polyfill.ts : cross browser and version supporter. (fill the gap)    
+styles.css : global css styles  
+test.ts : setting our test env    
+.editorconfig : setup rules of code styles for developer     
+.gitignore : ignore for git stages   
+angular.json(angularcli.json) :  all config of angular project(project name)   
+karma.conf.js : test runner for test   
+project.json : packges/dependency configuration.    
+tsconfig.json : typescript configuration.      
+
+  
+# How Angular project is Executed    
+go to /src/main.ts entry point and show what is bind to "bootstrapModule(AppModule)"   
+go to where had "AppModule" file    
+show "bootstrap" array. Basucally list all components which should be know to angular when analyzes index.html.    
+go to array value of "app.component.ts" and show selector that angular going to add to html file while rendering.    
+you can't see scripts files on index.html file because it's add using angular cli.    
+
+
+we can use component.ts file class properties and method in view template(component.html) file.    
+
+# Creating Custom Components example    
+>styles.scss    
+```scss
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+```    
+create "container" component manually    
+1. create folder call "container" inside app folder.   
+2. create "container.component.ts" file and import "Component" from angular/core    
+3. create component decorator with "selector", "templateUrl" and "styleUrls".    
+4. create "ContainerComponent" class.    
+5. copy component selector file name and add to the app.component.heml(template) file.   
+6. add newly created comonent in "app.module.ts" file's 
+
+create "nav" component using angular-cli.   
+```bash
+
+
+```   
 # Data Binding
 
 ### data transfer from file.ts to file.html in same component
