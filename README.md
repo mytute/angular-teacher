@@ -119,7 +119,7 @@ show how we can cotomize selectors
 @Component({
   selector: 'app-root',
   template: `<h1>Angular app {{title}}</h1>`,
-  styles: ['h1 { font-weight: normal; }']
+  styles: ['h1 { font-weight: normal; padding:10px }', 'div{padding:1px}']
 })
 
 @Component({
@@ -135,7 +135,7 @@ show how we can cotomize selectors
     <button type="button" (click)="activate()">Activate</button>
   `
 })
-
+# vscode not showing any error is misspelled html/css code here. 
 # you can remove styles and add styles to template    
 
 ```   
@@ -274,6 +274,22 @@ h2{
     width: 820px;
 }
 ```
+
+# Using Bootstrap in Angular 
+```bash
+$ npm install --save bootstrap # install latest    
+$ npm install --save boostrap@4 # install specific version    
+```    
+add "bootstrap.min.css" file location in "angular.json" file before global style file   
+after add this show browser inspect to see boostrap color file are added.   
+```json
+"styles": [
+  "node_modules/bootstrap/dist/css/bootstrap.min.css",
+  "src/styles.scss"
+],  
+```
+# Different Selectors in Angular    
+
 
 # Data Binding
 
