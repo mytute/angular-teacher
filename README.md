@@ -30,16 +30,16 @@ teach
 installation
 to work with angular should install node js to your os.    
 
-to check node version    
-$ node -v
+to check node version       
+$ node -v    
 
 to install angular cli globally    
-$ npm install -g @angular/cli
+$ npm install -g @angular/cli    
 
-to check angular version    
-$ ng --version
+to check angular version     
+$ ng --version    
 
-to change angular version
+to change angular version    
 ```shell
 ng --version
 npm uninstall -g @angular/cli
@@ -50,30 +50,51 @@ ng --version
 ```
 
 
-to start new project
-$ ng new <my-app-name>
-   step run 1: type yes for add angular routes
-   step run 2: select 'SCSS' for stylesheet format
+to start new project    
+$ ng new <my-app-name>   
+$ ng new --routing=true--style=scss
+# --routing=true|false
+# --style=css|scss|sass|less|styl
 
 to open location in VSCODE in terminal
 $ code .
 
-to start already created project
-first you need go to location that have index file
-$ ng serve -o
-  '-o' option for open starting project on browser
-
-to create new component
-$ ng generate component <component-name>
-
-
-to create new service
-$ ng generate service <service-name>
+to start already created project on root 
+$ ng serve -o   '-o' option for open starting project on browser 
+  
+to create new component    
+$ ng generate component <component-name>    
+$ ng g c <component-name>  # short form     
 
 
+to create new service    
+$ ng generate service <service-name>    
+$ ng g s  <service-name>   # short form      
 
+to create new class   
+$ ng generate class <class-name>        
+$ ng g c <class-name>    
 
+to terminate live development server    
+ctr+c    
 
+go to /src/app/app.component.html and delete detault code start customize code    
+```html
+   <h>Angular app </h>
+```   
+
+go to /src/app/app.component.ts and create variable    
+```typescript
+   export clsss AppComponnet{
+      name = 'tutorial'
+   }
+```  
+ 
+```html
+   <h>Angular app {{name}} </h>
+```  
+
+   
 # Data Binding
 
 ### data transfer from file.ts to file.html in same component
