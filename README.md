@@ -290,6 +290,56 @@ after add this show browser inspect to see boostrap color file are added.
 ```
 # Different Selectors in Angular    
 
+# Different Selectors in Angular 
+
+change like html attribute.    
+> container.component.html     
+```html 
+<div class="wrapper">
+    <!-- <app-nav></app-nav> -->
+    <div app-nav></div>  <!-- add here -->
+    <app-header></app-header>
+</div>
+```
+
+> container.component.html     
+```typescript
+@Component({
+  selector: '[app-nav]', // change here..
+  templateUrl: './nav.component.html',
+  styleUrls: ['./nav.component.scss']
+})
+```  
+
+change like class.
+> container.component.html     
+```html 
+<div class="wrapper">
+    <!-- <app-nav></app-nav> -->
+    <div class="app-nav"></div>  <!-- add here -->
+    <app-header></app-header>
+</div>
+```
+
+> container.component.html     
+```typescript
+@Component({
+  selector: '.app-nav', // change here..
+  templateUrl: './nav.component.html',
+  styleUrls: ['./nav.component.scss']
+})
+```  
+
+# Data binding      
+Data binding in angular allows us to communicate between a component class and its corresponding view template.   
+
+One way data binding is data flow only one direction. component class in corresponding view template or view template to component class.   
+1. String interpolation {{data}}    (component class to view template)
+2. Property binding [property] = data (component class to view template)
+3. Event binding (data)="expression" (view template to component class)    
+
+Two way data binding binds data from component class view template and view template to component class. This is combination of property binding and event binding.    
+
 
 # Data Binding
 
