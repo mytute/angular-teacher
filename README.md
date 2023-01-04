@@ -192,9 +192,89 @@ create "container" component manually
 
 create "nav" component using angular-cli.   
 ```bash
-
-
+$ ng g c nav  # create on src/app/nav 
+$ ng g c test/cd/compo  # create on src/app/test/cd/compo
 ```   
+> nav.component.html    
+```html
+<div class="navbar">
+    <div class="site-name">
+        <h1>eShopping</h1>
+    </div>
+    <div class="ste-menu">
+        <a href="#">HOME</a>
+        <a href="#">ABOUT</a>
+        <a href="#">CONTACT</a>
+        <a href="#">CART</a>
+        <a href="#">PRODUCTS</a>
+    </div>
+</div>
+```    
+> nav.component.scss   
+```scss
+.navbar{
+    display: flex;
+    background-color: #F58041;
+}
+.site-name{
+    padding: 5px 30px;
+    color: #E74C3C;
+}
+.site-menu{
+    padding: 10px 30px;
+    margin-left: 100px;
+}
+a{
+    text-decoration: none;
+    color: #212F3D;
+    margin: 0px 10px;
+}
+```    
+> header.component.html    
+```html
+<div class="header">
+    <div class="site-image">
+        <img src="/assets/shopping.jpg" height="240" width="320">
+    </div>
+    <div class="site-slogan">
+        <h2>your one stop shop for everything</h2>
+    </div>
+</div>
+```    
+> header.component.scss    
+```html
+.header{
+    height: 280px;
+    padding: 30px 40px;
+    display: flex;
+    background-color: #fff;
+}
+
+.site-slogan{
+    width: 420px;
+    margin-left: 50px;
+    text-align: center;
+}
+
+h2{
+    font-size: 45px;
+}
+```
+> container.component.html    
+```html
+<div class="wrapper">
+    <app-nav></app-nav>
+    <app-header></app-header>
+</div>
+```    
+> container.component.scss    
+```html
+.wrapper{
+    margin: 0 auto;
+    width: 820px;
+}
+```
+
 # Data Binding
 
 ### data transfer from file.ts to file.html in same component
