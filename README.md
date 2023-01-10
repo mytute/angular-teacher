@@ -341,10 +341,8 @@ One way data binding is data flow only one direction. component class in corresp
 Two way data binding binds data from component class view template and view template to component class. This is combination of property binding and event binding.    
 
 
-# Data Binding
-
-### data transfer from file.ts to file.html in same component
-
+### data transfer from component to view template in same component   
+show tree examle of Interpolation(one way binding)
 
 >file.ts
 
@@ -358,7 +356,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  homeTitle = "this data from homeComponent class";
+
+  // String Interpolation
+  public homeTitle:string = "this data from homeComponent class";
+  public getTitle():string{
+    return this.homeTitle;
+  }
 
   constructor() { }
 
@@ -371,12 +374,19 @@ export class HomeComponent implements OnInit {
 >file.html  
 
 ```html
+<!-- String Interpolation -->
 <p>{{homeTitle}}</p>
+<p>{{1+2+3}}</p>
+<p>{{ getTitle() }}</p>
+
 ```
 
 # Property Binding
 
 ### data transfer from file.ts to file.html in same component
+
+"src" is the name of the <img> element property.    
+property with [] make right side dynamic expression if not just static value.    
 
 This thing can do with previous method too.    
 ```html
@@ -387,23 +397,72 @@ But as a improvment here we are use '[property_name ]' to get this property name
 <input [property_name ]="value_variable_located_in_ts_file" />
 ```
 
-### Binding to HTML properties
+### property Binding
   * Native HTML properties: [value]="express"   
       ```html
-         <input value="type some thing" />
+         <input [value]="type some thing" />
+         <div  [hidden]="true">test hidden attribute</div>
       ```
   * Custom-made properties: [myProp]="express"   
       ```html
-         <input count="true" />
+         <input [count]="true" />
       ```
-  * Built in angular directives: [ngClass]="express"   
+  * Built in angular directives: [ngClass]="express"  
+    expression > "return values": String, Array, and Object 
+    no deepwatch class
+    is there one class static "[class]="className"" or "class="className"" with logic "[class.className]="express""    
+    is there multiple class static  "[class]="class1 class2"" or "class="class1 class2"" or "[class]="['class1', 'class2']"" with logic "[class]="{foo: express, bar: express}""
+    with deepwatch class
+    is there one class static "[ngClass]="'className'""  with logic "[ngClass]="express""    
+    is there multiple class static  "[ngClass]="'class1 class2'"" or "[ngClass]="['class1', 'class2']"" with logic "[ngClass]="{foo: express, bar: express}"" or [ngClass]="val > 10 ? 'red' : 'green'"
+    no deepwatch sytle
+    is there one sytle static "[sytle]="width: 100px;" or "sytle="width: 100px;"" or "[style]="{width: '100px'}" or [style.width.px]="100" with logic "[style.background-color]="express""    
+    is there multiple sytle static "[sytle]="{width: '100px', height: '100px'"}" or "sytle="class1 class2"" or "[sytle]="['class1', 'class2']"" with logic "[sytle]="{foo: express, bar: express}""
+    with deepwatch style
+    is there one class static "[ngStyle]=""width: 100px;""  with logic "[ngStyle]="express""    
+    is there multiple class static  "[ngStyle]="'"width: 100px; height: 100px;'"" or "[ngStyle]=""{width: '100px', height: '100px'}"" with logic "[ngStyle]="{foo: express, bar: express}"" or [ngStyle]="val > 10 ? 'red' : 'green'"
+
       ```html
-         <input count="true" />  ????
+         <div [ngClass]="className" >
+         <div [ngClass]="'first second'">
+         <div [ngClass]="['first', 'second']">
+         <div [ngClass]="{first: true, second: true, third: true}">
+         <div [ngClass]="{'first second': true}">
+         <div [ngClass]="val > 10 ? 'red' : 'green'">{{ val }}<div>
+         <div [ngClass]="control.isInvalid ? 'error' : ''" ><div> <!-- same 1-->
+         <div [ngClass]="{ error: control.isInvalid }" ><div> <!-- same 1-->
+         <div [class.error]="control.isInvalid" > <div><!-- same 1-->
+         <div [ngClass]="getClassOf(val)">{{ val }}</div>
+         <div [ngClass]="{ low: val >= 0 && val <=5, medium: val > 5 && val <= 10, high: val > 10}">{{ val }}</div>
+         <div [class.sale]="onSale"></div> <!-- boolean | undefined | null -->
+         <div [class]="my-class-1 my-class-2 my-class-3"></div> <!-- string  -->
+         <div [class]="{foo: true, bar: false}"></div> <!-- string | boolean | undefined | null  -->
+         <div [class]="['foo', 'bar']"></div> <!-- Array<string>  -->
+         
+         <div [ngStyle]="{'max-width.px': widthExp}"></div>
+         
+         <div [style.backgroundColor]="expression"></div> <!-- same 2-->
+         <div [style.background-color]="expression"></div> <!-- same 2-->
+         <div [style.width]="100px"></div> <!-- same 4-->
+         <div [style.width.px]="100"></div> <!-- same 4-->
+         <div [style]="width: 100px; height: 100px; background-color: cornflowerblue;"></div> <!-- same 3-->
+         <div [style]="{width: '100px', height: '100px', backgroundColor: 'cornflowerblue'}"></div> <!-- same 3-->
       ```
 
-### Binding to HTML properties  
+       [class] and [style] bindings not support for deepwatch.(can do using with pipes)  
+       [ngClass]="{'a b': true}" does work, but [class]="{'a b': true}" 
 
+  * send data to child component  
+      ```html
+        <app-item-detail [childItem]="parentItem"></app-item-detail>
+      ```
 
+  
+  * think in style binding    
+    1. static or variable or dynamic 
+    2. single or multiple or function    
+
+ 
 >file.ts
 
 ```javascript
@@ -434,9 +493,63 @@ export class HomeComponent implements OnInit {
 
 # Two Way Data Binding
 
-### Here dynamically changing value from shared variable(ninja) that located in file.ts .(Binding in same component)
+Two way data binding binds data from component class to view template and view template to component class. This is a combination fo property binding and event binding.     
 
->file.ts
+<mark>import FormsModule in module.ts file</mark>    
+ [()] syntax combines the brackets of property binding, [], with the parentheses of event binding, (), as follows.   
+
+Two way data binding is combination of @Input() and @Output() biding.    
+
+
+```javascript
+@Component({
+  selector: 'app-twowayparent',
+  template: `
+    <app-twowaychild [(size)]="fontSizePx"></app-twowaychild>
+    <!-- <app-sizer [size]="fontSizePx" (sizeChange)="fontSizePx=$event"></app-sizer> -->
+    <div [style.font-size.px]="fontSizePx">Resizable Text</div>
+  `,
+  styleUrls: ['./twowayparent.component.css']
+})
+export class TwowayparentComponent{
+  fontSizePx = 16;
+}
+```
+
+```javascript
+@Component({
+  selector: 'app-twowaychild',
+  template: `
+      <div>
+          <button type="button" (click)="dec()" title="smaller">-</button>
+          <button type="button" (click)="inc()" title="bigger">+</button>
+          <span [style.font-size.px]="size">FontSize: {{size}}px</span>
+      </div>
+  `,
+  styleUrls: ['./twowaychild.component.css']
+})
+export class TwowaychildComponent{
+  @Input()  size!: number | string;
+  @Output() sizeChange = new EventEmitter<number>();
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+  dec() { this.resize(-1); }
+  inc() { this.resize(+1); }
+
+  resize(delta: number) {
+    this.size = Math.min(40, Math.max(8, +this.size + delta));
+    this.sizeChange.emit(this.size);
+  }
+}
+```
+
+
+# ngModel     
+this is builtin data bind directive in angular     
+hare space required ( "ninja.name" /> )*
 
 ```javascript
 import { Component, OnInit } from '@angular/core';
@@ -444,40 +557,54 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-home',
-  templateUrl: './home.component.html',
+  template: `
+    <input type="text" [(ngModel)]="ninja.name" />
+    <p>{{ninja.name}}</p>
+
+    <!-- ngModel two data binding with radio button -->
+    <input type="radio" value="one" name="school" [(ngModel)]="schoolType" (change)="selectType()" />
+    <input type="radio" value="two" name="school" [(ngModel)]="schoolType" (change)="selectType()" />
+    <input type="radio" value="three" name="school" [(ngModel)]="schoolType" (change)="selectType()" />
+
+    <!-- ngModel two data binding with search mechanism. -->
+    <span> Search : </span>
+    <input type="text" [(ngModel)]="searchText">
+    <ng-container *ngFor="let item of items">
+        <div *ngIf="searchText === '' || item.toLowerCase().includes(searchText)" >
+            {{item}}
+        </div>
+    </ng-container>
+  `,
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent  {
 
   public ninja = {
       name:"Yoshi",
       belt:"Black"
   };
 
-  constructor() { }
-
-  ngOnInit(): void {
+  // ngModel two data binding with radio button
+  public schoolType:string = '';
+  public selectType():void{
+    console.log("select type : ", this.schoolType);
   }
+
+  // ngModel two data binding with search mechanism.
+  public searchText:string ='';
+  public items:string[]  = ["Sri Lanka", "Russia", "India"];
+
+
 
 }
 ```
 
->file.html  
-
-```html
-<input [(ngModel)]="ninja.name" />
-<p>{{ninja.name}}</p>
-```
-*  *space required ( "ninja.name" /> )*
-
-* In html file when value change of input field then dynamically it change value of p tags.    
-* "ngModel" is unique name binder for make communicate between file.ts and file.html .
-
-
 
 # Native Event Binding
 
-### Here we send click event from file.html to file.ts in same component. (Binding in same component)
+### (Binding in same component)    
+Event binding allows us to bind webpage events to a componsnts property or methods.    
+Using event binding we can pass data from view to component.    
 
 >file.ts
 
@@ -496,6 +623,21 @@ export class HomeComponent implements OnInit {
     alert(val);
   };
 
+  clickMessage = '';
+  onClickMe() {
+    this.clickMessage = 'You are my hero!';
+  }
+
+  values = '';
+  onKey(event: KeyboardEvent) { // type of $event not same for everytime. type 'Event' also works here.  
+    // Passing $event is a dubious practice because this is very big object.    
+    // avoid this we can use template refernce variable.    
+    this.values += (event.target as HTMLInputElement).value + ' | ';
+  }
+
+  onKeydown(event: Event):void{
+    console.log("event :", event)
+  }
   constructor() { }
 
   ngOnInit(): void {
@@ -508,154 +650,671 @@ export class HomeComponent implements OnInit {
 
 ```html
 <button (click)="alertMe('i am good person')" > Click Me</button>
+<button type="button" (click)="onClickMe()">Click me!</button>
+<input (keyup)="onKey($event)">
+<!-- You can also use modifier keys, such as shift, alt, control, and the command -->
+<!-- followgin code triger when click "shift+t" -->
+<input (keydown.shift.t)="onKeydown($event)">
+<!-- keydown.shift.alt.t use "code" keyword on mac avoid create character from key combination -->
+<input (keydown.code.shiftleft.altleft.keyt)="onKeydown($event)" />
+```
+
+### Get user input from a template reference variable   
+```typescript
+@Component({
+  selector: 'app-key-up2',
+  template: `
+    <input #box (keyup)="onKey(box.value)">
+    <p>{{values}} {{box.value}}</p>
+
+    <!-- Key event filtering(here enter key)  and On blur -->
+    <input #box (keyup.enter)="onEnter(box.value)" (blur)="update(box.value)>
+    <p>{{value}}</p>
+  `
+})
+export class KeyUpComponent_v2 {
+  values = '';
+  onKey(value: string) {
+    this.values += value + ' | ';
+  }
+
+  value = '';
+  onEnter(value: string) { this.value = value; }
+  update(value: string) { this.value = value; }
+}
+```
+
+# Directives    
+
+Directives are classes that add additional behavior to elements in your Angular applications.
+Directive are simply an instruction to the dom.  
+
+1. Components : Used with a template(html file). This type of directive is the most common directive type. eg: <app-root></app-root> in index.html
+2. Attribute directives : Change the appearance or behavior of an element, component, or another directive.   
+Attribute directives listen to and modify the behavior of other HTML elements, attributes, properties, and components. Built-in directives use only public APIs.   
+NgClass, NgStyle, NgModel
+3. Structural directives : Change the DOM layout by adding and removing DOM elements.    
+NgIf, NgFor, NgSwitch (can't use in same tag. use ng-container)  
+
+example of custom directive.    
+```html 
+<div changeDiveGreen > this is a Div </div>  
+``` 
+```typescript 
+@Directive({
+  selector:'[changeDivGreen]'
+})
+export class ChangeDivGreen{
+
+}
+```
+
+## ngFor  
+
+```typescript
+@Component({
+  selector: 'app-ngfortest',
+  template: `
+  <li *ngFor="let item of arr>
+    {{item}}
+  </li>
+
+  <!-- Local variables  -->
+  <!--   
+  $implicit: T: The value of the individual items in the iterable (ngForOf).
+  index: number: The index of the current item in the iterable.
+  count: number: The length of the iterable.
+  first: boolean: True when the item is the first item in the iterable.
+  last: boolean: True when the item is the last item in the iterable.
+  even: boolean: True when the item has an even index in the iterable.
+  odd: boolean: True when the item has an odd index in the iterable.
+  -->
+
+  <li *ngFor="let item of arr;index as i; first as start">
+    {{item}} index {{i}} {{start}}
+  </li>
+  `,
+  styleUrls: ['./ngfortest.component.scss']
+})
+export class NgfortestComponent {
+  
+  public arr: Array<number> = [1,2,3,4,5]; 
+
+}
+```
+
+## ngIf 
+
+```typescript
+@Component({
+  selector: 'app-ngfortest',
+  template: `
+    <!-- with * -->
+    <div *ngIf="hero" class="name">{{hero.name}}</div>    
+
+    <!-- with bind -->
+    <ng-template [ngIf]="hero">
+      <div class="name">{{hero.name}}</div>
+    </ng-template>  
+
+    <!-- if else -->
+    <div *ngIf="condition; else elseBlock">Content to render when condition is true.</div>
+    <ng-template #elseBlock>Content to render when condition is false.</ng-template>
+
+    <!-- if else then -->
+    <div *ngIf="condition; then thenBlock else elseBlock"></div>
+    <ng-template #thenBlock>Content to render when condition is true.</ng-template>
+    <ng-template #elseBlock>Content to render when condition is false.</ng-template>
+
+    <!-- if else creat local variable -->
+    <div *ngIf="userObservable | async as user; else loading">
+      Hello {{user.last}}, {{user.first}}!
+    </div>
+    <ng-template #loading let-user>Waiting... (user is {{user|json}})</ng-template>
+
+    <!-- if else binding -->
+    <ng-template [ngIf]="heroes" [ngIfElse]="loading">
+    <div class="hero-list">...</div>
+    </ng-template>
+    <ng-template #loading>
+    <div>Loading...</div>
+    </ng-template>
+
+
+  `,
+  styleUrls: ['./ngfortest.component.scss']
+})
+export class NgfortestComponent {
+  userObservable = new Subject<{first: string, last: string}>();
+  public hero:object={
+    name:'Samadhi'
+  } 
+
+}
 ```
 
 
-# Custom Property Binding
+# Custom Property and Event Binding
 
 ### Here we transfer data between two components.
 
-we are using data sender component's html file as media of transferring between two components.     
-data sending parent to child.     
+we can send data parent to child using @input decorator and child to parent usgin @output    
 
->app.ts
+@input : custom property binding (number, string, boolean, or object(function)).     
+@output : custom event binding.
+
+>child.ts
+```javascript
+@Component({
+  selector: 'app-child',
+  template : `
+  `
+})
+export class ChildComponent {
+   // property binding  without usgin alias   
+   @Input() prop:string = '';
+
+   // property binding  with usgin alias
+   // @Input('alias_name') prop:string = '';
+
+   // event binding
+   @Output() newItemEvent:EventEmitter<string> = new EventEmitter<string>();  
+   addNewItem(value: string) {
+    this.newItemEvent.emit(value);
+   }
+}
+```
+
+>parent.ts
+```javascript
+@Component({
+  selector: 'app-parent',
+  templateUrl: `
+    <!-- is there any argument then should provide "$event" -->
+    <app-child [prop]="item" (newItemEvent)="nwItem($event)"  >Loading..</app-child>
+  `
+})
+export class ParentComponent{
+  public item: string = "no job";
+
+  public nwItem(value:string):void{
+      console.log("event from parent", value)
+  }
+}
+```
+
+# Template Reference Variable    
+A template refernce variable is a reference to any DOM element, component or a directive in the template.    
 
 ```javascript
-import { Component } from '@angular/core';
-import { NgModule } from '@angular/core';
-
-//import { ROUTER_DIRECTIVES } from "@/angular/router";
-
 @Component({
-  selector: 'app-root', /* selector of index.html*/
-  templateUrl: './app.component.html', /**/
-  /*template : '<h1>{{title}}</h1>',*/
-  styleUrls: ['./app.component.css'],
-  //directives : [ ROUTER_DIRECTIVES ]
+  selector: 'app-child',
+  template : `
+    <table class="table">
+        <thead>
+            <tr>
+                <th>customer</th>
+                <th>controller</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let customer of customers">
+                <td>{{customer}}</td>
+                <td><button  (click)="selectedCustomer = customer">select</button></td>
+            </tr>
+        </tbody>
+    </table>
+  `
 })
-export class AppComponent {
+export class ChildComponent {
+  public selectedCustomer:string='';
+  public customers:string[]=["samadhi", "lasksahan"];
 
-  public school ={
-    name:"Asoka Collage",
-    adress:"Colombo 10"
-  };
+}
+```
+
+```javascript
+@Component({
+  selector: 'app-parent',
+  template: `
+    <!-- just update input value with template ref variable -->
+    <!-- here put keyup event for update template -->
+    <input type="text" #myVariable (keyup)="0" >
+    <p>{{myVariable.value}}</p>
+
+    <!-- use ref variable pass data to component -->
+    <input type="text" #pass  />
+    <button (click)="sayHello(pass)">Say Hello</button>
+    <p>{{myVariable.value}}</p>
+
+    <!-- use ref variable pass data to component -->
+    <app-child #selected></app-child>
+    <p>{{selected.selectedCustomer}}</p>
+  `
+})
+export class ParentComponent{
+
+  // use ref variable pass data to component 
+  public sayHello(inputElement: HTMLInputElement):void{
+      console.log("text : ", inputElement.value)
+  }
+
+}
+```
+
+# ViewChild    
+
+here we can access component from template using ViewChild decorator.   
+and we can import child component in to our component and call it's function(but it's call servaral times )       
+
+View queries are set before the ngAfterViewInit callback is called.
+
+
+* selector - The directive type or the name used for querying.
+* read - Used to read a different token from the queried elements.
+* static - True to resolve query results before change detection runs, false to resolve after change detection. Defaults to false.
+
+
+```javascript
+@Component({
+  selector: 'app-parent',
+  template: `
+    <div>
+        <label for="">DOB :</label>
+        <input type="date" #dateinput (blur)="calculateAge()">
+    </div>
+    <div>
+        <label for="">Age :</label>
+        <input type="text" #ageinput>
+    </div>
+
+    </div>
+   
+    <!-- import  child component and call it's function via template -->
+    <app-child></app-child>
+    {{ viewchild.sayHello() }}
+  `
+})
+export class ParentComponent{
+
+    // accesss template native element via template ref vatiable and @ViewChild
+    @ViewChild('dateinput') dateofbirth! : ElementRef<HTMLInputElement>;
+    @ViewChild('ageinput') age! : ElementRef;
+
+    calculateAge():void{
+        const birthYear:number = new Date(this.dateofbirth.nativeElement.value).getFullYear();
+        const currentYear:number = new Date().getFullYear();
+        const age:number = currentYear - birthYear;
+        this.age.nativeElement.value= age;
+    }
+
+    // access child class using viewchild decorator 
+    @ViewChild(ChildComponent, {static:true}) viewchild! : ChildComponent;
+
+  }
+}
+```
+
+```javascript
+@Component({
+  selector: 'app-child',
+  template : ``
+})
+export class ChildComponent {
+
+  // call this function from parent tempalte   
+  // but this function call several times.   
+  sayHello():void{
+    console.log("Hello !!", ++this.count);
+  }
+
+}
+```
+
+# View Encapsulation   
+The View Encapsulation is a concept or behaviour in angular, where component CSS styles are encapuslated in to the components view and do not effect the rest of the application.    
+
+
+View Encapsulation types    
+1. ViewEncapsulation.None     
+2. ViewEncapsulation.Emulated (default)   add uniwue names for html and css attributes.  
+3. ViewEncapsulation.ShadowDom   
+
+Emulated 
+```html
+<!-- inside component class, tag, id styles all bind to _ngcontent-hxb-c18 attribute here -->
+<!-- that's why inside component there are not common styels apply to child elements -->  
+<!-- but after compile globle styles will add because class name still there -->
+<button  class="btnx">Button</button> == > <button _ngcontent-hxb-c18="" class="btnx">Button</button>
+```
+
+None 
+```html
+<!-- inside component class, tag, id styles all apply as global -->
+<!-- so this sytle going to map entire project that have same class, tag, id -->  
+<button  class="btnx">Button</button> == > <button  class="btnx">Button</button>
+```
+
+ShadowDom 
+```html
+<!-- from this component create new dom and it's not add any styles except (*{}) -->
+<!-- if this component child not a ShadowDom then this compoenent styles add to it's childrens   -->  
+<button  class="btnx">Button</button> == > <button  class="btnx">Button</button>
+```
+
+# ng-content   
+
+The ng-contents is used when we want to insert the content dynamically inside the component the helps to increase component reusability.  
+
+This is very useful to pass child components(one or more) through common components.   
+
+using ng-content we can pass content inside the component selector and when angular parses that content that appears at the place of ng-content.    
+
+```javascript
+@Component({
+  selector: 'app-parent',
+  template: `
+    <!-- child tag will replace for ng-content tag -->
+    <app-card>
+        <h3 >this is header</h3> <!-- projected content -->
+        <h3 >this is header 2</h3>  <!-- projected content -->
+    </app-card>
+    <app-card>
+        <h2>this is header</h2>  <!-- projected content -->
+    </app-card>
+
+    <!-- event we have two ng-content tag child will only add for last ng-tag -->
+    <app-card>
+        <h3 >this is header</h3>
+        <h3 >this is header 2</h3>
+    </app-card>
+    <app-card>
+        <h2>this is header</h2>
+    </app-card>
+
+    <!-- use select attribute with parent class name to place tag with 
+    multiple ng-content-->
+    <app-card>
+        <h3 class="c1">this is header</h3>
+        <h3 class="c2">this is header 2</h3>
+    </app-card>
+    <app-card>
+        <h2 class="c1" >this is header</h2>
+    </app-card>
+  `
+})
+export class ParentComponent{
 
 }
 
 ```
 
->root.html  
+```javascript
+@Component({
+  selector: 'app-child',
+  template : `
 
-```html
-<app-home [prop]="school"  >Loading..</app-home>
+    <!-- child tag will replace for ng-content tag -->
+    <div class="frame">
+        <ng-content ></ng-content>
+    </div>
+
+    <!-- event we have two ng-content tag child will only add for last ng-tag -->
+    <div class="frame">
+        <ng-content ></ng-content>
+        <p> text ----------------------- </p>
+        <ng-content ></ng-content>
+    </div>
+
+    <!-- use select attribute with parent class name to place tag with 
+    multiple ng-content-->
+    <div class="frame">
+        <ng-content select=".c2"></ng-content>
+        <p> text ----------------------- </p>
+        <ng-content select=".c1"></ng-content>
+    </div>
+  `
+})
+export class ChildComponent {
+
+}
 ```
 
+# Angular Lifwcycle Hook.  
+The Angular lifecycle hooks are the methods that angular invokes on the directives and components as it creates, changes and destroys them.   
 
->file.ts
+When the angular application-start, it first creates and renders the root component. Then, it creates and rendres its Children's & their children. It forms a tree of components.   
+
+Once Angular loads the components, it starts the process of rendering the view(template). To do that, it needs to check the input properties, evaluate the data bindings & expressions, render the projected content etc.   
+
+Angular lets up know these events happed using lifecycle hooks. For Example:   
+* "ngOnInit" when Angular initializes the component for the first time.   
+* When a component's input property change, Angular invokes "ngOnChanges".   
+* If the component is destroyed, Angular invokes ngOnDestroy.   
+
+## Change detection cycle    
+Change detection is the mechanism by which angular keeps the template is sync with the component.    
+
+This run with every,    
+1. input change.   
+2. dom events.   
+3. timer events (set timout, set interval, http request)   
+
+if there any change it will update the dom.    
+
+
+### projected content : 
+Projectd content is the HTML content which replaces the <ng-content> directive in child component.    
+### input bound properties :   
+These are those properties of a component class which is decorated with @Input() decorator.  
+
+### Constructor of a Component.    
+1. Life Cycle of a component begins, when Angular creates the component class. First mothod that gets invoked is class "Constructor".   
+2. "Constructor" is neither a life cycle hook nor it is specific to Angular. It is a javascript feature. It is a method whick gets invoked, when a class is created.    
+3. When a constructor is called, at that point, none if the components input propertis are updated and available to use. Neither its child components are constructed. Projected contents are also not available.    
+4. Once Angular instaintiages the class, it kick-start first change detection cycle of the component.
+
+
+### 1. ngOnChanges lifecycle hook.   
+1. It is executed right at the start, when a new component is created, and it also gets executed whehnever one if the bound input property changes.    
+2. When change-detection-cycle detect any change, then only Angular invokes "ngOnChange" life cycle hook whenever any data bound input property(@input) of the component or directive changes.  
+
+### 2. ngOnInit lifecycle hook.  
+1. This hook is fired only once and immediately after create component and update its input properties.
+2. child components, projected content are not available at here and @ViewChild, @ViewChildren, @ContentChild & @ContentChildren also can't use here.        
+3. This is perfect palce where you want to add any initializaiton logic for your component.    
+
+### 3. ngDoCheck lifecycle hook.   
+1. This run when change-detection-cycle duration even it not detect any change(button click nothing change but "ngDoCheck" is working).    
+2. Invokes after "ngOnInit" and "ngOnChange" , good to use custom change detection.   
+
+### 4. ngAfterContenInit.  
+1. This called after the component's projection content has been fully initialized.    
+2. Works only onece when initializing.    
+3. @ContentChild and @ContentChildren update before this hook.    
+4. only for components.    
+
+### 5. ngAfterContenChecked.  
+1. This run when change-detection-cycle duration even it not detect any change.  
+2. @ContentChild and @ContentChildren update before this hook.     
+3. only for components.    
+
+### 6. ngAfterViewInit.  
+1. This run when component's view and all child views are fully initialized.  
+2. @ViewChild and @ViewChildren update before this hook.     
+3. Works only onece when initializing.     
+4. only for components. 
+
+### 7. ngAfterViewChecked.  
+1. This involk after ngAfterViewInit and .  
+2. run on every change detection(event nothing changed).     
+3. only for components. 
+
+### 8. ngOnDestroy.  
+1. This involk before component remove from the dom.      
+2. Use for some cleanup work(unsuscribe observable, detach event handlers to avoid memory leaks).     
+
 
 ```javascript
-import { Component, OnInit , Input} from '@angular/core';
-
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  selector: 'app-parent',
+  template: `
+  <div>
+      <input type="text" #inputSearch>
+      <button (click)="onSubmit(inputSearch.value)">Submit</button>
+      <app-lifecycle [value]="searchText">  
+          <p>this is content element {{searchText}}</p>
+      </app-lifecycle>
+  </div>
+  `
 })
-export class HomeComponent implements OnInit {
+export class ParentComponent{
+   public searchText:string='';
+   public onSubmit(value:string):void{
+      this.searchText = value;
+   }
+}
+```
 
-  @Input() prop;
+```javascript
+@Component({
+  selector: 'app-child',
+  templateUrl: './child.component.html',
+  styleUrls: ['./child.component.scss']
+})
+export class ChildComponent implements OnInit, OnChanges, 
+AfterContentInit, AfterContentChecked, AfterViewInit, AfterViewChecked, OnDestroy {
+  
+  @Input() value:string='lanka';
+  constructor() { 
+    /* this should show empty string but show 'lanka' 
+       because it's still not loaded to component. this run
+       only one time*/
+    console.log("constructor > ", this.value);
+  }
 
-  constructor() { }
+  ngOnChanges(change:SimpleChanges):void{ // only take a argument    
+    /* this should show empty string but and show empty string. 
+       because here @input are loaded here. if change detected in change
+       detection-lifecycle then this involk and show previous value and 
+       new value.*/
+    /* only text change and click button will call this fucntion */
+    console.log("onChange > ", this.value);
+    console.log("onChange value > ", change);
+  }
 
   ngOnInit(): void {
+    /* this should show empty string but and show empty string. 
+       because here @input are loaded here. this run only one time
+       because of @Input loaded here good initialize things.*/
+    console.log("OnInit > ", this.value);
   }
 
-}
+  ngDoCheck(): void {
+    /* this run in every change-detection event not change deteced 
+       and @Input value still not here. */
+    /* this will call two times because some file change in core.mjs */
+    /* this will call even click submit button without chage text */
+    console.log("DoChec > ", this.value);
+  }
+
+  ngAfterContentInit(){
+    /* this will call even is there no projected content only one time */
+    /* hare projected-content already updated in this stage */
+    console.log("AfterContentInit  ");
+  }
+
+  ngAfterContentChecked(){
+    /* this will call even is there no projected-content  */
+    /* run in every change-detection-lifecycle even not changes detected */
+    console.log("AfterContentChecked  ");
+  }
+
+  ngAfterViewInit(){
+    /* this will call even is there no projected-content  */
+    /* you can access native elements and child in this stage */
+    console.log("AfterViewInit  ");
+  }
+
+  ngAfterViewChecked(){
+    /* t */
+    /* run in every change-detection-lifecycle even not changes detected */
+    console.log("AfterViewChecked  ");
+  }
+
+  ngOnDestroy(){
+    /* t */
+    /* run just before current component destroy */
+    console.log("OnDestroy  ");
+  }
 ```
 
->file.html  
+# @ContentChild   
 
-```html
-<p>{{prop.name}}</p>
-<p>{{prop.adress}}</p>
-```
-Finally we can represent data values from app.component.ts on home.component.html
-
-
-# Custom Event Binding
-
-### Here we make custom event among components.    
-event sending child to parent.
-
-In here we make app.html `(onYell)` event listen from home.ts using  
-`@Output onYell = new EventEmitter()``
-
-To control custom event `(onYell)` from different component we make native `(click)` event on home.html page and when if fire then it's inside function `fireYellEvent` we can `onYell.emit(e)` the custom function on app.html .
-
->app.ts (custom event's fire function )
+use for access parent projected-content from child component class.
 
 ```javascript
-import { Component } from '@angular/core';
-import { NgModule } from '@angular/core';
-
 @Component({
-  selector: 'app-root', /* selector of index.html*/
-  templateUrl: './app.component.html', /**/
-  /*template : '<h1>{{title}}</h1>',*/
-  styleUrls: ['./app.component.css'],
-  //directives : [ ROUTER_DIRECTIVES ]
+  selector: 'app-parent',
+  template: `
+      <h1>Parent Component</h1>
+      <app-child>
+        <p #paragraph>This is the paragraph</p>
+      </app-child>
+  `
 })
-export class AppComponent {
-  //
-  yell(e){
-     alert("I am yelling...");
+export class ParentComponent{
+
   }
-}
-
 ```
-
->root.html  (custom event )
-
-```html
- <app-home (onYell)="yell($event)" >Loading..</app-home>
-```
-
-
->file.ts (make listem the custom event and make it's emit with click event)
 
 ```javascript
-import { Component, OnInit , Input, Output , EventEmitter} from '@angular/core';
-
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  selector: 'app-child',
+  template : ``
 })
-export class HomeComponent implements OnInit {
+export class ChildComponent implement  {
+  @ContentChild('paragraph') paragraphE1: ElementRef;
 
-  /* make listener for custom event
-     @Output() mean...
-  */
-  @Output() onYell = new EventEmitter();
-
-  fireYellEvent(e){
-    this.onYell.emit();
+  ngOnInit():void{
+    console.log(this.paragraphE1) // UNDEFINED !!!!
   }
-
-  constructor() { }
-
-  ngOnInit(): void {
+  ngAfterContentInit():void{
+    console.log(this.paragraphE1) // show element 
+    console.log(this.paragraphE1.nativeElement.textContent); // show text
   }
-
 }
-
 ```
 
->file.html  (make native click event )
+# Custom Attribute Directive.
 
-```html
-<button (click)="fireYellEvent($event)" > Hit Me</button>
-```
+
+
+# Think in Angular.  
+
+## select most relevant style attribute or style bind for the element.  
+* static or variable or dynamic 
+* single or multiple or function    
+## select most relevant for element.   
+* select (click) event for button.
+* select (change) event for radio button with [(ngMudule)]  
+## avoid pass html element data with event.   
+* use template reference variable.   
+* use two data binding eg: builtin [(ngModule)].   
+## can't use more than on Structural directives in single tag.  
+* use ng-container.  
+## local referance   
+* can pass class variable data to parent view template.   
+* can pass view template data to class using viewchild.   
+
+
+
+? null equlize operator 
+#bounce sign 
+
+
+
+
 
 [Routing](#Routing)
 # Routing
