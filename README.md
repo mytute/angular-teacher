@@ -445,12 +445,12 @@ But as a improvment here we are use '[property_name ]' to get this property name
          <div [style.background-color]="expression"></div> <!-- same 2-->
          <div [style.width]="100px"></div> <!-- same 4-->
          <div [style.width.px]="100"></div> <!-- same 4-->
-         <div [style]="width: 100px; height: 100px; background-color: cornflowerblue;"></div> <!-- same 3-->
+         <div [style]="'width: 100px; height: 100px; background-color: cornflowerblue;'"></div> <!-- same 3-->
          <div [style]="{width: '100px', height: '100px', backgroundColor: 'cornflowerblue'}"></div> <!-- same 3-->
       ```
 
        [class] and [style] bindings not support for deepwatch.(can do using with pipes)  
-       [ngClass]="{'a b': true}" does work, but [class]="{'a b': true}" 
+       [ngClass]="{'a b': true}" does work, but not [class]="{'a b': true}" 
 
   * send data to child component  
       ```html
