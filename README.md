@@ -1286,7 +1286,422 @@ export class ChildComponent implement  {
 }
 ```
 
-# Custom Attribute Directive.
+# Custom Attribute Directive.   
+Drirectives are simply an instruction to the DOM.    
+1. component directive. (only in tempalte view)   
+2. attribute directive.(change behaviour or look)    
+3. structural directive. (control dom element(add/remove))     
+
+let's create attribute directive to change background color when we use it.   
+you have to insert this directive to module.ts file in "declaration" array
+
+```typescript 
+@Directive({
+    selector:'[setBackground]'
+})
+export class SetBackgroundDirective implement OnInit{
+    /**
+     * @param1 element :which we are put this directive
+    */
+    constructor(private element:ElementRef){
+        // element.nativeElement.style.backgroundColor = '#CBE6C9';
+        /* private argument in constructor makes private variable inside constructor and have access to outside of component */
+    }
+
+    ngOnInit{
+       /* following function works even in constructor because it's a argument*/
+       /* but good practice to put it inside ngOnInit */
+       this.element.nativeElement.style.backgroundColor = '#CBE6C9';
+    }
+}
+```
+
+then add above "setBackground" directive to element.    
+
+```typescript 
+@Component({
+  selector: 'app-parent',
+  template : `
+    <div setBackground >
+       <p> This is demo HTML content </p>
+    </div>
+  `
+})
+export class ChildComponent {
+
+}
+```
+
+# Renderer2 in Angular 
+
+
+Access dom elements direcly in component.ts file is not good practice. here is why..
+
+1. Angular keeps the component & the view in Sync using Template, data binding & change detection, etc. All of them are bypassed when we update the DOM Directly.    
+2. DOM Manipulation works only in Browser. You will not able to use the Aoo in other platforms like a web-worker, in Server or in a Desktop, or in mobile app, etc. where there is no browser.   
+3. The DOM APIs do not sanitize the data. Hence it is possible to inject a script, thereby, open our app an easy target for the XXS injection attack.   
+
+let's see the better way to access DOM elements by using Renderer2   
+
+
+```typescript 
+@Directive({
+    selector:'[appHighlight]'
+})
+export class SetBackgroundDirective implement OnInit{
+    /**
+     * @param1 element :which we are put this directive
+     * @param2 render  : angular object/? that manipulate the dom
+    */
+    constructor(private element:ElementRef, private renderer: Renderer2){
+        /* private argument in constructor makes private variable inside constructor and have access to outside of component */
+    }
+
+    ngOnInit{
+        // add css style
+        this.renderer.setStyle(this.element.nativeElement, 'backgroundColor', '#F198A');
+        // add css class
+        this.renderer.addClass(this.element.nativeElement, 'class-name-hare' );
+        // add attribute
+        this.renderer.setAttribute(this.element.nativeElement, 'title', 'this is example div' );
+    }
+}
+```
+
+then add above "appHighlight" directive to element.    
+
+```typescript 
+@Component({
+  selector: 'app-parent',
+  template : `
+    <div appHighlight >
+       <p> This is demo HTML content using renderer </p>
+    </div>
+  `
+})
+export class ChildComponent {
+
+}
+```
+
+# @HostListner in Angular    
+
+The @HostListner decorator listens to the DOM event on the host element and it reacts to that event by execution an event handler method.   
+
+```typescript 
+@Directive({
+    selector:'[appHover]'
+})
+export class HoverDirective{
+    /**
+     * @param1 element :which we are put this directive
+     * @param2 render  : angular object/? that manipulate the dom
+    */
+    constructor(private element:ElementRef, private renderer: Renderer2){
+        /* private argument in constructor makes private variable inside constructor and have access to outside of component */
+    }
+
+    @HostListener('mouseenter') onmouseover(){
+        this.renderer.setStyle(this.element.nativeElement, 'margin', '5px 10px');
+        this.renderer.setStyle(this.element.nativeElement, 'padding', '30px 10px');
+        this.renderer.setStyle(this.element.nativeElement, 'transition', '0.5s');
+    }
+    @HostListener('mouseleave') onmouseout(){
+        this.renderer.setStyle(this.element.nativeElement, 'margin', '10px 20px');
+        this.renderer.setStyle(this.element.nativeElement, 'padding', '10px 20px');
+        this.renderer.setStyle(this.element.nativeElement, 'transition', '0.5s');
+    }
+}
+```
+
+then add above "appHover" directive to element.    
+
+```typescript 
+@Component({
+  selector: 'app-parent',
+  template : `
+    <div appHover >
+       <p> This is demo HTML content using renderer </p>
+    </div>
+  `
+})
+export class ChildComponent {
+
+}
+```
+
+# @HostBinding in Angular.    
+
+The @HostBinding decorator binds a host element property to a variable in a directive or a component.  
+
+```typescript 
+@Directive({
+    selector:'[appBetterHighlight]'
+})
+export class BetterHighlightDirective{
+    /**
+     * @param1 element :which we are put this directive
+     * @param2 render  : angular object/? that manipulate the dom
+    */
+    constructor(private element:ElementRef, private renderer: Renderer2){
+        /* private argument in constructor makes private variable inside constructor and have access to outside of component */
+    }
+
+    /* you can add any count of hostbinding here */
+    @HostBinding('style.backgroundColor') background: string = 'transparent'
+    @HostBinding('style.border') border: string = 'none';
+
+    @HostListener('mouseenter') mouseover(){
+        this.background = 'pink';
+        this.border = 'red 2px solid';
+    }
+    @HostListener('mouseleave') mouseout(){
+        this.background = 'transparent';
+        this.border = 'none';
+    }
+}
+```
+
+then add above "appBetterHighlight" directive to element.    
+
+```typescript 
+@Component({
+  selector: 'app-parent',
+  template : `
+    <div appBetterHighlight >
+       <p> This is demo HTML content using renderer </p>
+    </div>
+  `
+})
+export class ChildComponent {
+
+}
+```  
+
+
+# Binding Directive Properties.     
+
+Here we are talking pass data to any directive to make it more dynamic.
+
+We take same example above to show how to pass data any directive using property binding.  
+
+```typescript 
+@Directive({
+    selector:'[appBetterHighlight]'
+})
+export class BetterHighlightDirective implements OnInit{
+ 
+    @Input () detaultColor:string = 'transparent';
+    @Input () highlightColor:string = 'pink';
+
+    ngOnInit(){
+        // at the start detaultColor is 'transparent'
+        this.background = this.detaultColor;
+        // after this it will be 'yellow'
+    }
+
+    /* you can add any count of hostbinding here */
+    @HostBinding('style.backgroundColor') background: string = 'transparent'
+    @HostBinding('style.border') border: string = 'none';
+
+    @HostListener('mouseenter') mouseover(){
+        this.background = this.highlightColor;
+        this.border = 'red 2px solid';
+    }
+    @HostListener('mouseleave') mouseout(){
+        this.background = this.detaultColor;
+        this.border = 'none';
+    }
+}
+```
+
+then add above "appBetterHighlight" directive to element.    
+
+```typescript 
+@Component({
+  selector: 'app-parent',
+  template : `
+    <div appBetterHighlight [detaultColor]="yellow" [highlightColor]="red" >
+       <p> This is demo HTML content using renderer </p>
+    </div>
+  `
+})
+export class ChildComponent {
+
+}
+```  
+
+As we talk ngStyle and ngClass also attribute directive. But so far in our custom attribute directives doesn't wrapped with double square brackets. We can use that way too when we have one main property to bind. For this we use that main proterty allias as our directive name. Now we can't use  'highlightColor' variable anymore on template but can use in class.
+
+```typescript 
+@Directive({
+    selector:'[appBetterHighlight]'
+})
+export class BetterHighlightDirective implements OnInit{
+ 
+    @Input () detaultColor:string = 'transparent';
+    @Input ('appBetterHighlight') highlightColor:string = 'pink';
+
+    ngOnInit(){
+        // at the start detaultColor is 'transparent'
+        this.background = this.detaultColor;
+        // after this it will be 'yellow'
+    }
+
+    /* you can add any count of hostbinding here */
+    @HostBinding('style.backgroundColor') background: string = 'transparent'
+    @HostBinding('style.border') border: string = 'none';
+
+    @HostListener('mouseenter') mouseover(){
+        this.background = this.highlightColor;
+        this.border = 'red 2px solid';
+    }
+    @HostListener('mouseleave') mouseout(){
+        this.background = this.detaultColor;
+        this.border = 'none';
+    }
+}
+```
+
+then add above "appBetterHighlight" directive to element.    
+
+```typescript 
+@Component({
+  selector: 'app-parent',
+  template : `
+    <div [appBetterHighlight]="'red'" [detaultColor]="'yellow'" >
+       <p> This is demo HTML content using renderer </p>
+    </div>
+  `
+})
+export class ChildComponent {
+
+}
+```  
+
+what happen when we bind property that name common with html property.  
+```html 
+<div title="this is title"> </div>
+<div [title]="true"> </div>
+``` 
+hare angular first check custom directive if there not the check for the native element.  
+
+
+# Custom appClass directive
+
+# Conditional Directive in Angular
+
+# How Structural Directive Works.    
+
+A structural directive manipulate the DOM by adding or removing element to or from the DOM on which we use it.    
+we prefix "Structural Directive" with asterix.   
+when angular find the asterix angular know this is structural directive and agular create a template(ng-template) for it and it's wrap the view of the structural directive inside created template. And in the template angular not use asterix but use as just property bind.  
+
+following example shows angular don't use "asterix" internally.    
+
+```html
+<div *ngIf="show">
+    <p>this is notification.</p>
+</div>
+
+<!-- This convert to -->
+
+<ng-template [ngIf]="show">
+    <div>
+        <p>this is notification.</p>
+    </div>
+</ng-template>
+```
+
+when we have if-else    
+
+```html
+<div *ngIf="show; else bottom">
+    <p>this is notification.</p>
+</div>
+
+<!-- This convert to -->
+
+<ng-template [ngIf]="show" [ngIfElse]="bottom">
+    <div>
+        <p>this is notification 1.</p>
+    </div>
+</ng-template>
+<ng-template #bottom >
+    <div>
+        <p>this is notification 2.</p>
+    </div>
+</ng-template>
+```
+
+
+# Custom Structural Directive
+
+```bash
+$ ng g d if
+```
+above cmd create following two files.   
+1. if.directive.ts   
+2. if.directive.spec.ts    
+
+
+Attribute directive change look and beheviour of elements but structural directive manipulate by adding or removing from the dom.  
+
+for that we have to consider    
+1. what to add or remove.   
+2. from where to add or remove.   
+
+
+```typescript
+@Directive({
+  selector: '[appIf]'
+})
+export class IfDirective {
+
+   /** 
+    *  @pram1 template wrapper element
+    *  @pram2 viewContainer element inside wrapper element
+   */ 
+   constructor(private template: TemplateRef<any>, private viewContainer: ViewContainerRef){
+
+   }
+
+   /*
+    @Input() set displayView(condition: boolean){
+        if(condition) {
+            this.viewContainer.createEmbeddedView(this.template);
+        } else{
+            this.viewContainer.clear();
+        }
+    }
+
+    here to angular find this directive we can do in two ways.   
+    1. add allias to @Input as 'appIf'.
+    2. change displayView to appIf.
+
+   */
+
+    /* method 1 */
+
+    @Input('appIf') set displayView(condition: boolean){
+        if(condition) {
+            this.viewContainer.createEmbeddedView(this.template);
+        } else{
+            this.viewContainer.clear();
+        }
+    }
+
+    /* method 2 */
+
+   @Input() set appIf(condition: boolean){
+     if(condition) {
+        this.viewContainer.createEmbeddedView(this.template);
+     } else{
+        this.viewContainer.clear();
+     }
+   }
+}
+```
 
 
 
