@@ -104,44 +104,6 @@ go to /src/app/app.component.ts and create variable
    <h>Angular app {{name}} </h>
 ```  
 
-go to /src/app/app.component.ts     
-show how we can cotomize selectors    
-```typescript   
-
-@Component({
-  selector: 'app-root',
-  templateUrl: '<h1>Angular app </h1>',
-  styleUrls: ['./app.component.scss']
-})
-
-# You can specify more than one styles file in styleUrls it will apply only for this component.    
-
-@Component({
-  selector: 'app-root',
-  template: `<h1>Angular app {{title}}</h1>`,
-  styles: ['h1 { font-weight: normal; padding:10px }', 'div{padding:1px}']
-})
-
-@Component({
-  selector: 'app-hero-controls',
-  template: `
-    <style>
-      h1 {
-        background-color: white;
-        border: 1px solid #777;
-      }
-    </style>
-    <h1>Controls</h1>
-    <button type="button" (click)="activate()">Activate</button>
-  `
-})
-# vscode not showing any error is misspelled html/css code here. 
-# you can remove styles and add styles to template    
-
-```   
-show app.component.ts file "app-root" in index.html file and "app-root" on browser inspect.  
-
-
 # Folder struture    
 node_modules : all dependences  
 src : source files   
@@ -293,6 +255,7 @@ after add this show browser inspect to see boostrap color file are added.
 # Different Selectors in Angular 
 
 change like html attribute.    
+
 > container.component.html     
 ```html 
 <div class="wrapper">
@@ -329,6 +292,43 @@ change like class.
   styleUrls: ['./nav.component.scss']
 })
 ```  
+   
+show how we can cotomize selectors    
+```typescript   
+
+@Component({
+  selector: 'app-root',
+  templateUrl: '<h1>Angular app </h1>',
+  styleUrls: ['./app.component.scss']
+})
+
+# You can specify more than one styles file in styleUrls it will apply only for this component.    
+
+@Component({
+  selector: 'app-root',
+  template: `<h1>Angular app {{title}}</h1>`,
+  styles: ['h1 { font-weight: normal; padding:10px }', 'div{padding:1px}']
+})
+
+@Component({
+  selector: 'app-hero-controls',
+  template: `
+    <style>
+      h1 {
+        background-color: white;
+        border: 1px solid #777;
+      }
+    </style>
+    <h1>Controls</h1>
+    <button type="button" (click)="activate()">Activate</button>
+  `
+})
+# vscode not showing any error is misspelled html/css code here. 
+# you can remove styles and add styles to template    
+
+```   
+show app.component.ts file "app-root" in index.html file and "app-root" on browser inspect.  
+
 
 # Data binding      
 Data binding in angular allows us to communicate between a component class and its corresponding view template.   
