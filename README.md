@@ -684,116 +684,6 @@ export class KeyUpComponent_v2 {
 }
 ```
 
-# Directives    
-
-Directives are classes that add additional behavior to elements in your Angular applications.
-Directive are simply an instruction to the dom.  
-
-1. Components : Used with a template(html file). This type of directive is the most common directive type. eg: <app-root></app-root> in index.html
-2. Attribute directives : Change the appearance or behavior of an element, component, or another directive.   
-Attribute directives listen to and modify the behavior of other HTML elements, attributes, properties, and components. Built-in directives use only public APIs.   
-NgClass, NgStyle, NgModel
-3. Structural directives : Change the DOM layout by adding and removing DOM elements.    
-NgIf, NgFor, NgSwitch (can't use in same tag. use ng-container)  
-
-example of custom directive.    
-```html 
-<div changeDiveGreen > this is a Div </div>  
-``` 
-```typescript 
-@Directive({
-  selector:'[changeDivGreen]'
-})
-export class ChangeDivGreen{
-
-}
-```
-
-## ngFor  
-
-```typescript
-@Component({
-  selector: 'app-ngfortest',
-  template: `
-  <li *ngFor="let item of arr>
-    {{item}}
-  </li>
-
-  <!-- Local variables  -->
-  <!--   
-  $implicit: T: The value of the individual items in the iterable (ngForOf).
-  index: number: The index of the current item in the iterable.
-  count: number: The length of the iterable.
-  first: boolean: True when the item is the first item in the iterable.
-  last: boolean: True when the item is the last item in the iterable.
-  even: boolean: True when the item has an even index in the iterable.
-  odd: boolean: True when the item has an odd index in the iterable.
-  -->
-
-  <li *ngFor="let item of arr;index as i; first as start">
-    {{item}} index {{i}} {{start}}
-  </li>
-  `,
-  styleUrls: ['./ngfortest.component.scss']
-})
-export class NgfortestComponent {
-  
-  public arr: Array<number> = [1,2,3,4,5]; 
-
-}
-```
-
-## ngIf 
-
-```typescript
-@Component({
-  selector: 'app-ngfortest',
-  template: `
-    <!-- with * -->
-    <div *ngIf="hero" class="name">{{hero.name}}</div>    
-
-    <!-- with bind -->
-    <ng-template [ngIf]="hero">
-      <div class="name">{{hero.name}}</div>
-    </ng-template>  
-
-    <!-- if else -->
-    <div *ngIf="condition; else elseBlock">Content to render when condition is true.</div>
-    <ng-template #elseBlock>Content to render when condition is false.</ng-template>
-
-    <!-- if else then -->
-    <div *ngIf="condition; then thenBlock else elseBlock"></div>
-    <ng-template #thenBlock>Content to render when condition is true.</ng-template>
-    <ng-template #elseBlock>Content to render when condition is false.</ng-template>
-
-    <!-- if else creat local variable -->
-    <div *ngIf="userObservable | async as user; else loading">
-      Hello {{user.last}}, {{user.first}}!
-    </div>
-    <ng-template #loading let-user>Waiting... (user is {{user|json}})</ng-template>
-
-    <!-- if else binding -->
-    <ng-template [ngIf]="heroes" [ngIfElse]="loading">
-    <div class="hero-list">...</div>
-    </ng-template>
-    <ng-template #loading>
-    <div>Loading...</div>
-    </ng-template>
-
-
-  `,
-  styleUrls: ['./ngfortest.component.scss']
-})
-export class NgfortestComponent {
-  userObservable = new Subject<{first: string, last: string}>();
-  public hero:object={
-    name:'Samadhi'
-  } 
-
-}
-```
-
-
 # Custom Property and Event Binding
 
 ### Here we transfer data between two components.
@@ -1286,6 +1176,117 @@ export class ChildComponent implement  {
 }
 ```
 
+# Directives    
+
+Directives are classes that add additional behavior to elements in your Angular applications.
+Directive are simply an instruction to the dom.  
+
+1. Components : Used with a template(html file). This type of directive is the most common directive type. eg: <app-root></app-root> in index.html
+2. Attribute directives : Change the appearance or behavior of an element, component, or another directive.   
+Attribute directives listen to and modify the behavior of other HTML elements, attributes, properties, and components. Built-in directives use only public APIs.   
+NgClass, NgStyle, NgModel
+3. Structural directives : Change the DOM layout by adding and removing DOM elements.    
+NgIf, NgFor, NgSwitch (can't use in same tag. use ng-container)  
+
+example of custom directive.    
+```html 
+<div changeDiveGreen > this is a Div </div>  
+``` 
+```typescript 
+@Directive({
+  selector:'[changeDivGreen]'
+})
+export class ChangeDivGreen{
+
+}
+```
+
+## ngFor  
+
+```typescript
+@Component({
+  selector: 'app-ngfortest',
+  template: `
+  <li *ngFor="let item of arr""
+                               >
+    {{item}}
+  </li>
+
+  <!-- Local variables  -->
+  <!--   
+  $implicit: T: The value of the individual items in the iterable (ngForOf).
+  index: number: The index of the current item in the iterable.
+  count: number: The length of the iterable.
+  first: boolean: True when the item is the first item in the iterable.
+  last: boolean: True when the item is the last item in the iterable.
+  even: boolean: True when the item has an even index in the iterable.
+  odd: boolean: True when the item has an odd index in the iterable.
+  -->
+
+  <li *ngFor="let item of arr;index as i; first as start">
+    {{item}} index {{i}} {{start}}
+  </li>
+  `,
+  styleUrls: ['./ngfortest.component.scss']
+})
+export class NgfortestComponent {
+  
+  public arr: Array<number> = [1,2,3,4,5]; 
+
+}
+```
+
+## ngIf 
+
+```typescript
+@Component({
+  selector: 'app-ngfortest',
+  template: `
+    <!-- with * -->
+    <div *ngIf="hero" class="name">{{hero.name}}</div>    
+
+    <!-- with bind -->
+    <ng-template [ngIf]="hero">
+      <div class="name">{{hero.name}}</div>
+    </ng-template>  
+
+    <!-- if else -->
+    <div *ngIf="condition; else elseBlock">Content to render when condition is true.</div>
+    <ng-template #elseBlock>Content to render when condition is false.</ng-template>
+
+    <!-- if else then -->
+    <div *ngIf="condition; then thenBlock else elseBlock"></div>
+    <ng-template #thenBlock>Content to render when condition is true.</ng-template>
+    <ng-template #elseBlock>Content to render when condition is false.</ng-template>
+
+    <!-- if else creat local variable -->
+    <div *ngIf="userObservable | async as user; else loading">
+      Hello {{user.last}}, {{user.first}}!
+    </div>
+    <ng-template #loading let-user>Waiting... (user is {{user|json}})</ng-template>
+
+    <!-- if else binding -->
+    <ng-template [ngIf]="heroes" [ngIfElse]="loading">
+    <div class="hero-list">...</div>
+    </ng-template>
+    <ng-template #loading>
+    <div>Loading...</div>
+    </ng-template>
+
+
+  `,
+  styleUrls: ['./ngfortest.component.scss']
+})
+export class NgfortestComponent {
+  userObservable = new Subject<{first: string, last: string}>();
+  public hero:object={
+    name:'Samadhi'
+  } 
+
+}
+```
+  
+  
 # Custom Attribute Directive.   
 Drirectives are simply an instruction to the DOM.    
 1. component directive. (only in tempalte view)   
