@@ -252,8 +252,6 @@ after add this show browser inspect to see boostrap color file are added.
 ```
 # Different Selectors in Angular    
 
-# Different Selectors in Angular 
-
 change like html attribute.    
 
 > container.component.html     
@@ -341,7 +339,9 @@ One way data binding is data flow only one direction. component class in corresp
 Two way data binding binds data from component class view template and view template to component class. This is combination of property binding and event binding.    
 
 
-### data transfer from component to view template in same component   
+## String interpolation     
+
+data transfer from component to view template in same component   
 show tree examle of Interpolation(one way binding)
 
 >file.ts
@@ -381,9 +381,9 @@ export class HomeComponent implements OnInit {
 
 ```
 
-# Property Binding
+## Property Binding
 
-### data transfer from file.ts to file.html in same component
+data transfer from file.ts to file.html in same component
 
 "src" is the name of the <img> element property.    
 property with [] make right side dynamic expression if not just static value.    
@@ -397,7 +397,6 @@ But as a improvment here we are use '[property_name ]' to get this property name
 <input [property_name ]="value_variable_located_in_ts_file" />
 ```
 
-### property Binding
   * Native HTML properties: [value]="express"   
       ```html
          <input [value]="type some thing" />
@@ -408,21 +407,7 @@ But as a improvment here we are use '[property_name ]' to get this property name
          <input [count]="true" />
       ```
   * Built in angular directives: [ngClass]="express"  
-    expression > "return values": String, Array, and Object 
-    no deepwatch class
-    is there one class static "[class]="className"" or "class="className"" with logic "[class.className]="express""    
-    is there multiple class static  "[class]="class1 class2"" or "class="class1 class2"" or "[class]="['class1', 'class2']"" with logic "[class]="{foo: express, bar: express}""
-    with deepwatch class
-    is there one class static "[ngClass]="'className'""  with logic "[ngClass]="express""    
-    is there multiple class static  "[ngClass]="'class1 class2'"" or "[ngClass]="['class1', 'class2']"" with logic "[ngClass]="{foo: express, bar: express}"" or [ngClass]="val > 10 ? 'red' : 'green'"
-    no deepwatch sytle
-    is there one sytle static "[sytle]="width: 100px;" or "sytle="width: 100px;"" or "[style]="{width: '100px'}" or [style.width.px]="100" with logic "[style.background-color]="express""    
-    is there multiple sytle static "[sytle]="{width: '100px', height: '100px'"}" or "sytle="class1 class2"" or "[sytle]="['class1', 'class2']"" with logic "[sytle]="{foo: express, bar: express}""
-    with deepwatch style
-    is there one class static "[ngStyle]=""width: 100px;""  with logic "[ngStyle]="express""    
-    is there multiple class static  "[ngStyle]="'"width: 100px; height: 100px;'"" or "[ngStyle]=""{width: '100px', height: '100px'}"" with logic "[ngStyle]="{foo: express, bar: express}"" or [ngStyle]="val > 10 ? 'red' : 'green'"
-
-      ```html
+     ```html
          <div [ngClass]="className" >
          <div [ngClass]="'first second'">
          <div [ngClass]="['first', 'second']">
@@ -491,116 +476,7 @@ export class HomeComponent implements OnInit {
 <input [value]=myString/>
 ```
 
-# Two Way Data Binding
-
-Two way data binding binds data from component class to view template and view template to component class. This is a combination fo property binding and event binding.     
-
-<mark>import FormsModule in module.ts file</mark>    
- [()] syntax combines the brackets of property binding, [], with the parentheses of event binding, (), as follows.   
-
-Two way data binding is combination of @Input() and @Output() biding.    
-
-
-```javascript
-@Component({
-  selector: 'app-twowayparent',
-  template: `
-    <app-twowaychild [(size)]="fontSizePx"></app-twowaychild>
-    <!-- <app-sizer [size]="fontSizePx" (sizeChange)="fontSizePx=$event"></app-sizer> -->
-    <div [style.font-size.px]="fontSizePx">Resizable Text</div>
-  `,
-  styleUrls: ['./twowayparent.component.css']
-})
-export class TwowayparentComponent{
-  fontSizePx = 16;
-}
-```
-
-```javascript
-@Component({
-  selector: 'app-twowaychild',
-  template: `
-      <div>
-          <button type="button" (click)="dec()" title="smaller">-</button>
-          <button type="button" (click)="inc()" title="bigger">+</button>
-          <span [style.font-size.px]="size">FontSize: {{size}}px</span>
-      </div>
-  `,
-  styleUrls: ['./twowaychild.component.css']
-})
-export class TwowaychildComponent{
-  @Input()  size!: number | string;
-  @Output() sizeChange = new EventEmitter<number>();
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
-  dec() { this.resize(-1); }
-  inc() { this.resize(+1); }
-
-  resize(delta: number) {
-    this.size = Math.min(40, Math.max(8, +this.size + delta));
-    this.sizeChange.emit(this.size);
-  }
-}
-```
-
-
-# ngModel     
-this is builtin data bind directive in angular     
-hare space required ( "ninja.name" /> )*
-
-```javascript
-import { Component, OnInit } from '@angular/core';
-
-
-@Component({
-  selector: 'app-home',
-  template: `
-    <input type="text" [(ngModel)]="ninja.name" />
-    <p>{{ninja.name}}</p>
-
-    <!-- ngModel two data binding with radio button -->
-    <input type="radio" value="one" name="school" [(ngModel)]="schoolType" (change)="selectType()" />
-    <input type="radio" value="two" name="school" [(ngModel)]="schoolType" (change)="selectType()" />
-    <input type="radio" value="three" name="school" [(ngModel)]="schoolType" (change)="selectType()" />
-
-    <!-- ngModel two data binding with search mechanism. -->
-    <span> Search : </span>
-    <input type="text" [(ngModel)]="searchText">
-    <ng-container *ngFor="let item of items">
-        <div *ngIf="searchText === '' || item.toLowerCase().includes(searchText)" >
-            {{item}}
-        </div>
-    </ng-container>
-  `,
-  styleUrls: ['./home.component.css']
-})
-export class HomeComponent  {
-
-  public ninja = {
-      name:"Yoshi",
-      belt:"Black"
-  };
-
-  // ngModel two data binding with radio button
-  public schoolType:string = '';
-  public selectType():void{
-    console.log("select type : ", this.schoolType);
-  }
-
-  // ngModel two data binding with search mechanism.
-  public searchText:string ='';
-  public items:string[]  = ["Sri Lanka", "Russia", "India"];
-
-
-
-}
-```
-
-
-# Native Event Binding
+## Native Event Binding
 
 ### (Binding in same component)    
 Event binding allows us to bind webpage events to a componsnts property or methods.    
@@ -732,6 +608,120 @@ export class ParentComponent{
   }
 }
 ```
+
+
+# Two Way Data Binding
+
+Two way data binding binds data from component class to view template and view template to component class. This is a combination fo property binding and event binding.     
+
+<mark>import FormsModule in module.ts file</mark>    
+ [()] syntax combines the brackets of property binding, [], with the parentheses of event binding, (), as follows.   
+
+Two way data binding is combination of @Input() and @Output() biding.    
+
+
+```javascript
+@Component({
+  selector: 'app-twowayparent',
+  template: `
+    <app-twowaychild [(size)]="fontSizePx"></app-twowaychild>
+    <!-- <app-sizer [size]="fontSizePx" (sizeChange)="fontSizePx=$event"></app-sizer> -->
+    <div [style.font-size.px]="fontSizePx">Resizable Text</div>
+  `,
+  styleUrls: ['./twowayparent.component.css']
+})
+export class TwowayparentComponent{
+  fontSizePx = 16;
+}
+```
+
+```javascript
+@Component({
+  selector: 'app-twowaychild',
+  template: `
+      <div>
+          <button type="button" (click)="dec()" title="smaller">-</button>
+          <button type="button" (click)="inc()" title="bigger">+</button>
+          <span [style.font-size.px]="size">FontSize: {{size}}px</span>
+      </div>
+  `,
+  styleUrls: ['./twowaychild.component.css']
+})
+export class TwowaychildComponent{
+  @Input()  size!: number | string;
+  @Output() sizeChange = new EventEmitter<number>();
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+  dec() { this.resize(-1); }
+  inc() { this.resize(+1); }
+
+  resize(delta: number) {
+    this.size = Math.min(40, Math.max(8, +this.size + delta));
+    this.sizeChange.emit(this.size);
+  }
+}
+```
+
+
+# ngModel     
+this is builtin data bind directive in angular     
+hare space required ( "ninja.name" /> )*
+
+```javascript
+import { Component, OnInit } from '@angular/core';
+
+
+@Component({
+  selector: 'app-home',
+  template: `
+    <input type="text" [(ngModel)]="ninja.name" />
+    <p>{{ninja.name}}</p>
+
+    <!-- ngModel two data binding with radio button -->
+    <input type="radio" value="one" name="school" [(ngModel)]="schoolType" (change)="selectType()" />
+    <input type="radio" value="two" name="school" [(ngModel)]="schoolType" (change)="selectType()" />
+    <input type="radio" value="three" name="school" [(ngModel)]="schoolType" (change)="selectType()" />
+
+    <!-- ngModel two data binding with search mechanism. -->
+    <span> Search : </span>
+    <input type="text" [(ngModel)]="searchText">
+    <ng-container *ngFor="let item of items">
+        <div *ngIf="searchText === '' || item.toLowerCase().includes(searchText)" >
+            {{item}}
+        </div>
+    </ng-container>
+  `,
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent  {
+
+  public ninja = {
+      name:"Yoshi",
+      belt:"Black"
+  };
+
+  // ngModel two data binding with radio button
+  public schoolType:string = '';
+  public selectType():void{
+    console.log("select type : ", this.schoolType);
+  }
+
+  // ngModel two data binding with search mechanism.
+  public searchText:string ='';
+  public items:string[]  = ["Sri Lanka", "Russia", "India"];
+
+
+
+}
+```
+
+
+
+
+
 
 # Template Reference Variable    
 A template refernce variable is a reference to any DOM element, component or a directive in the template.    
