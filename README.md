@@ -745,6 +745,9 @@ A template refernce variable is a reference to any DOM element, component or a d
 export class ChildComponent {
   public selectedCustomer:string='';
   public customers:string[]=["samadhi", "lasksahan"];
+  public call():void{
+    console.log('call from parent');
+  }
 
 }
 ```
@@ -766,6 +769,7 @@ export class ChildComponent {
     <!-- use ref variable pass data to component -->
     <app-child #selected></app-child>
     <p>{{selected.selectedCustomer}}</p>
+    <button (click)="selected.call()">click</button>
   `
 })
 export class ParentComponent{
@@ -821,7 +825,7 @@ export class ParentComponent{
         const birthYear:number = new Date(this.dateofbirth.nativeElement.value).getFullYear();
         const currentYear:number = new Date().getFullYear();
         const age:number = currentYear - birthYear;
-        this.age.nativeElement.value= age;
+        this.age.nativeElement.value= age.toString();
     }
 
     // access child class using viewchild decorator 
