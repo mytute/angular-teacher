@@ -581,7 +581,8 @@ export class ChildComponent {
    @Input() prop:string = '';
 
    // property binding  with usgin alias
-   // @Input('alias_name') prop:string = '';
+   // @Input('parent_bind_name') prop:string = '';
+   // as variable we use prop'
 
    // event binding
    @Output() newItemEvent:EventEmitter<string> = new EventEmitter<string>();  
@@ -745,7 +746,7 @@ A template refernce variable is a reference to any DOM element, component or a d
 export class ChildComponent {
   public selectedCustomer:string='';
   public customers:string[]=["samadhi", "lasksahan"];
-  public call():void{
+  public callme():void{
     console.log('call from parent');
   }
 
@@ -769,7 +770,7 @@ export class ChildComponent {
     <!-- use ref variable pass data to component -->
     <app-child #selected></app-child>
     <p>{{selected.selectedCustomer}}</p>
-    <button (click)="selected.call()">click</button>
+    <button (click)="selected.callme()">click</button>
   `
 })
 export class ParentComponent{
@@ -960,6 +961,43 @@ export class ChildComponent {
 }
 ```
 
+# @ContentChild   
+
+use for access parent projected-content from child component class.
+
+```javascript
+@Component({
+  selector: 'app-parent',
+  template: `
+      <h1>Parent Component</h1>
+      <app-child>
+        <p #paragraph>This is the paragraph</p>
+      </app-child>
+  `
+})
+export class ParentComponent{
+
+  }
+```
+
+```javascript
+@Component({
+  selector: 'app-child',
+  template : ``
+})
+export class ChildComponent implement  {
+  @ContentChild('paragraph') paragraphE1: ElementRef;
+
+  ngOnInit():void{
+    console.log(this.paragraphE1) // UNDEFINED !!!!
+  }
+  ngAfterContentInit():void{
+    console.log(this.paragraphE1) // show element 
+    console.log(this.paragraphE1.nativeElement.textContent); // show text
+  }
+}
+```
+
 # Angular Lifwcycle Hook.  
 The Angular lifecycle hooks are the methods that angular invokes on the directives and components as it creates, changes and destroys them.   
 
@@ -1127,43 +1165,6 @@ AfterContentInit, AfterContentChecked, AfterViewInit, AfterViewChecked, OnDestro
     /* run just before current component destroy */
     console.log("OnDestroy  ");
   }
-```
-
-# @ContentChild   
-
-use for access parent projected-content from child component class.
-
-```javascript
-@Component({
-  selector: 'app-parent',
-  template: `
-      <h1>Parent Component</h1>
-      <app-child>
-        <p #paragraph>This is the paragraph</p>
-      </app-child>
-  `
-})
-export class ParentComponent{
-
-  }
-```
-
-```javascript
-@Component({
-  selector: 'app-child',
-  template : ``
-})
-export class ChildComponent implement  {
-  @ContentChild('paragraph') paragraphE1: ElementRef;
-
-  ngOnInit():void{
-    console.log(this.paragraphE1) // UNDEFINED !!!!
-  }
-  ngAfterContentInit():void{
-    console.log(this.paragraphE1) // show element 
-    console.log(this.paragraphE1.nativeElement.textContent); // show text
-  }
-}
 ```
 
 # Directives    
