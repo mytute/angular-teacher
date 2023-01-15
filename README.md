@@ -719,10 +719,6 @@ export class HomeComponent  {
 ```
 
 
-
-
-
-
 # Template Reference Variable    
 A template refernce variable is a reference to any DOM element, component or a directive in the template.    
 
