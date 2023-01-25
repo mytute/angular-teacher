@@ -1714,7 +1714,187 @@ export class IfDirective {
 * can pass class variable data to parent view template.   
 * can pass view template data to class using viewchild.   
 
+# SOLID in Angular.   
 
+# Dependency Injection   
+
+DI is coding pattern in which a class askes for dependencies from enternal 
+sources rather than creteing them itself.    
+```typescript
+@Component({
+  selector:'app-selector',
+  templateUrl: './your.component.html',
+  styleUrls: ['./your.component.scss'],
+})
+export class YourComponent{
+  constructor(private user:UserService){}
+  
+  doSomething(){
+    this.user.getData(); 
+  }
+}
+```
+
+sample code for dependency injection.   
+
+```typescript
+// our custom service
+class UserService{
+  sayHi(){
+    console.log('HI!')
+  }
+}
+
+// component
+class Component{
+  constructor(private user:UserService){}
+}
+
+// injector
+class Injector{
+  private _container = new Map();
+
+  constructor(private _providers: any[] = []){
+    this._providers.froEach(service => this._container.set(service, new service()));
+  }
+
+  get(service:any){
+    const serviceInstance = this._container.get(service);
+    if(!serviceInstance){
+      throw Error('No provider found');
+    }
+    return serviceInstance;
+  }
+}
+
+// use in angular (this is happen in compilation time)
+const injector = new Injector([UserService]);
+const component = new Component(injector.get(UserService));
+component.user.sayHi();
+
+```
+
+### Injector hierarchy & resilition rules
+
+1. model injector hierarchy.   
+
+* Root injector (priority 3)    
+Services which were configured in non-lazy @ngModule and 
+in @Injectable() annotations.    
+because of child injectors add to root injector, it will 
+available for hole application.
+```typescript
+@Injectable({
+  providedIn: 'root'
+})
+export class UserService {}
+
+@NgModule({
+  providers:[UserService]
+  // ...
+})
+export class AppModule {}
+```
+
+* Platform injector (priority 2)  
+create when we call method platformBrowserDynamic()   
+```typescript
+platformBrowserDynamic().bootstrapModule(AppModule).then(ref =>{
+  // in main.ts file
+})
+```
+
+* Null injector  (priority 1) 
+It throws error if Angular tries find service here.     
+
+2. element injector hierarchy.    
+
+* Parent (priority 1) 
+Services which were configured in @Component() and in 
+@Direrective() annotations.   
+```typescript   
+@Component({
+  selector: 'root',
+  providers: [UserService],
+  template: '',
+  // ...
+})
+export class RootComponent {}   
+// or
+@Directive({
+  selector: '[appSome]',
+  providers: [UserService]
+})
+export class SomeDirective {}
+```
+
+* Child (priority 2) 
+This injector is a child injector for root component and
+parent injector for Grand Child component.    
+```typescript   
+@Component({
+  selector: 'child',
+  providers: [UserService],
+  template: '',
+  // ...
+})
+export class ChildComponent {}   
+```
+
+* Grand Child (priority 3) 
+This injector is a chid injector for child-component      
+```typescript   
+@Component({
+  selector: 'grand-child',
+  providers: [UserService],
+  template: '',
+  // ...
+})
+export class GrandChildComponent {}   
+```
+
+let's see how to resolve injectors in angular in Grand Chidl.. 
+
+
+Grand Child > Child > Parent > back to Grand Child and see scope of module hierachy >
+Root > Platform > Null (if not found then show error )
+
+
+### Resolution modifiers
+
+
+
+
+2. element injector hierarchy.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Injector    
+It is reponsible for creation of a class instance and inject it into   
+constructor of the object.    
 
 ? null equlize operator 
 #bounce sign 
