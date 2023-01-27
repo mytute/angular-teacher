@@ -1862,16 +1862,149 @@ Root > Platform > Null (if not found then show error )
 
 ### Resolution modifiers
 
+Resolution modifires is some special annotions whitch allow you to slightly change this logic
+of how angular resolves dependency in the injectors tree. 
 
+#### @Optional modifire
 
+create service file.   
+```bash
+$ ng g s logger
+```
+create service file and remove "providedIn: 'root'"
+```typescript
+import { Injectable } from '@angular/core';
 
-2. element injector hierarchy.
+// because provider not added anyware it will not found and show eror on browser(only).
+// we can escape not found service issue with '@Optional()' keyword in component.
+@Injectable({
+  // providedIn: 'root' // remote to get error
+})
+export class LoggerService {
 
+  constructor() { }
+}
+```
 
+```typescript
+import { Component, OnInit } from '@angular/core';
+import { LoggerService } from 'src/app/logger.service';
 
+@Component({
+  selector: 'app-dependency',
+  templateUrl: './dependency.component.html',
+  styleUrls: ['./dependency.component.scss']
+})
+export class DependencyComponent {
+ // add here '@Optional()' keyword to escape not found dependency error 
+  constructor(@Optional() private:logger:LoggerService) { 
+    if(logger){ // have to add if condition of null issue.
+      logger.someMethod();
+    }
+  }
 
+}
+```
 
+#### @Self, @SkipSelf and @Host modifires 
 
+self tries to resolve dependency only its own injector.  
+SkipSelf is oposite of self and it will skip own and check for other like parent or root.
+
+create service file.   
+```bash
+$ ng g s logger
+```
+create service file
+```typescript
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root' 
+})
+export class LoggerService {
+
+  constructor() { }
+}
+```
+
+```typescript
+import { Component, OnInit } from '@angular/core';
+import { LoggerService } from 'src/app/logger.service';
+
+@Component({
+  selector: 'app-dependency',
+  templateUrl: './dependency.component.html',
+  styleUrls: ['./dependency.component.scss']
+  providers: [LoggerService] // add here for @Self() modifire
+  // this will create new instace here and if you add this service root then 
+  // it will create two total instace of same service. 
+})
+export class DependencyComponent {
+  
+  constructor(@Self() private:logger:LoggerService) { 
+    // this will work with own service instence 
+  }
+
+  constructor(@SkipSelf() private:logger:LoggerService) { 
+    // this will work with parent or root instence
+  }
+
+  constructor(@Host() private:logger:LoggerService) { 
+    // @host makes resolve providers from it's template(./dependency.component.html) 
+  }
+
+}
+```
+
+### Dependency providers.   
+useClass, useExisting, useValue, useFactory
+
+#### useClass
+
+```typescript
+import { Component, OnInit, Optional, Self } from '@angular/core';
+import { LoggerService } from 'src/app/logger.service';
+import { Logger2Service } from 'src/app/logger2.service';
+
+@Component({
+  selector: 'app-optional-dependency',
+  templateUrl: './optional-dependency.component.html',
+  styleUrls: ['./optional-dependency.component.scss'],
+  /* * here we provide "LoggerService" but it will create instace for "Logger2Service".
+     * some time this is usefull becasue we create diffrent instance without changing 
+       constructor arguments.
+     * here good to have interface for "LoggerService" and "Logger2Service" classes not 
+       to make mistake.
+     * we can use this insdie @Injectable the can access all component "Logger2Service" instance 
+       for  "LoggerService".
+  */
+  providers: [{
+    provide:LoggerService, useClass: Logger2Service
+  }]
+})
+export class OptionalDependencyComponent implements OnInit {
+
+  constructor(private loggerService:LoggerService) { }
+
+  ngOnInit(): void {
+    this.loggerService.log();
+  }
+
+}
+```
+
+to create interface    
+```bash
+$ ng g i logger
+```
+
+```typescript
+export interface Logger {
+    name:string; // define string variable
+    log:()=>void; // define function
+}
+```
 
 
 
