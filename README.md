@@ -1978,18 +1978,50 @@ import { Logger2Service } from 'src/app/logger2.service';
        to make mistake.
      * we can use this insdie @Injectable the can access all component "Logger2Service" instance 
        for  "LoggerService".
+     * this create new instance of class. 
   */
   providers: [{
     provide:LoggerService, useClass: Logger2Service
   }]
+  /* useExisting */
+  providers: [{
+    provide:LoggerService, useExisting: Logger2Service
+  }]
+  /* useValue */
+  /* when Logger2Service is not a class but a object or something */
+  providers: [{
+    provide:LoggerService, useValue: Logger2Service
+  }]
 })
 export class OptionalDependencyComponent implements OnInit {
-
+  
+   /* useClass */
   constructor(private loggerService:LoggerService) { }
 
   ngOnInit(): void {
     this.loggerService.log();
   }
+
+  /* useExisting */
+  constructor(private loggerService:LoggerService,
+              private logger2Service:Logger2Service) { }
+
+  ngOnInit(): void {
+    console.log(this.loggerService === this.logger2Service); // false without useExisting
+    console.log(this.loggerService === this.logger2Service); // true  with useExisting
+  }
+
+  /* useValue */
+  constructor(private loggerService:LoggerService) {
+    // here we can use object properties and beheviours here with loggerService keyword 
+  }
+  
+  
+
+  /* useFactory */
+  constructor(private loggerService:LoggerService) { }
+  
+  
 
 }
 ```
