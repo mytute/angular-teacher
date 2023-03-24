@@ -24,6 +24,7 @@ teach
 [uninstall angular-cli](#uninstall-angular-cli)
 [Optimize Your Angular App](#Optimize_Your_Angular_App)
 [electron](#electron)
+[NgRx](#NgRx)
 
 
 
@@ -84,6 +85,12 @@ to create new class
 ```shell
 $ ng generate class <class-name>        
 $ ng g c <class-name>    
+```    
+
+to create new module   
+```shell
+$ ng generate moudle <path of folder not file name>        
+$ ng g c <path of folder not file name>    
 ```    
 
 to terminate live development server    
@@ -2065,6 +2072,477 @@ constructor of the object.
 #bounce sign 
 
 
+# Routing  
+
+Routing allows us to navigate from one part of our application to another part 
+or from one view to another view.    
+
+we can create route file seperete file or inside app.module.ts. 
+
+first create inside app.moudle.ts file
+
+```typescript 
+import { RouterModule, Routes } from '@angular/router';
+
+// # > root url
+
+const appRoute:Routes ={
+  {path: '', component: HomeComponent}, // route for root(default) url
+  // another way to define root url
+  // '' redirect to /home
+  {path: '', redirectTo: 'Home', pathMath: 'full'}, 
+  {path: 'Home', component: HomeComponent},
+  {path: 'About', component: AboutComponent},
+  {path: 'Contact', component: ContactComponent},
+  {path: 'Courses', component: CoursesComponent},
+  // wildcard route that match any path
+  // because of match with any have to put end of the other routes
+  {path: '**', component: PageNotFoundComponent},
+}
+
+@NgModule({
+  // ...
+  imports:{
+    BrowserModule,
+    RouterModule.forRoot(appRoot),
+  }
+  // ...
+})
+
+```
+
+after need to tell angular where to display    
+in app.component.html    
+
+```html
+<div class="main-container">
+  <div class="nav-container">
+    <ul>
+
+      <!-- because of href this will reload the page -->
+      <li><a href="Home">Home</a></li>
+      <li><a href="About">About</a></li>
+      <li><a href="Contact">Contact</a></li>
+      <li><a href="Courses">Courses</a></li> 
+
+      <!-- routerLink directive help not to reload page -->
+      <li><a routerLink="Home">Home</a></li>
+      <li><a [routerLink]="'About'">About</a></li>
+      <li><a [routerLink]="['Contact']">Contact</a></li>
+      <li><a routerLink="Courses">Courses</a></li> 
+
+      <!-- routerLinkAcitve for define style class when router is active -->
+      <li routerLinkActive="active"><a routerLink="Home">Home</a></li>
+      <!-- routerLinkActiveOptions not to match with parent routes  -->
+      <!-- localhost:4200/about > localhost:4200(parent) + /about(child)  -->
+      <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <a routerLink="About">About</a>
+      </li>
+      <li routerLinkActive="active"><a routerLink="Contact">Contact</a></li>
+      <li routerLinkActive="active"><a routerLink="Courses">Courses</a></li> 
+
+      <!-- routerLinkAcitve for define style class when router is active -->
+      <li routerLinkActive="active"><a routerLink="Home">Home</a></li>
+      <!-- routerLinkActiveOptions not to match with parent routes  -->
+      <!-- localhost:4200/about > localhost:4200(parent) + /about(child)  -->
+      <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <a routerLink="About">About</a>
+      </li>
+      <li routerLinkActive="active"><a routerLink="Contact">Contact</a></li>
+      <li routerLinkActive="active"><a routerLink="Courses">Courses</a></li> 
+
+    </ul>
+  </div>
+  <div class="component-container">
+    <!-- <app-home><app-home>
+    <app-about><app-about>
+    <app-contact><app-contact>
+    <app-courses><app-courses> -->
+
+    <router-outlet></router-outlet>
+  </div>
+</div>
+```
+
+[NgRx](#NgRx)
+# NgRx
+
+RxJs powered state management for Angular applications, inspired by Redux. 
+
+what is the State ?    
+information that our application tracks
+
+example for state 
+```typescript
+{
+  customers{
+    customers:[
+      {name: "jhone", id: 1},
+      {name: "Irina", id: 2},
+    ]
+  },
+  loading: false
+}
+```
+
+when there is more starte it's hard to manange. we can use redux pattern   
+
+Redux (pattern principle)    
+1. Single source of truth(store).   
+2. The state is read only(immutable).  
+3. All changes in state are made by pure functions called Reducers.  
+
+NgRx is a collection of libulary that can implement redux pattern in Angular.
+
+1. @ngrx/store - the core library 
+2. @ngrx/effect - used to handle side effects such as communication with backend-end server.   
+3. @ngrx/router - store - to connect the angular router to ngrx store.   
+4. @ngrx/entity - used to manage record collections.   
+5. @ngrx/store-devtools - allows us to inspect and debug the application.   
+6. @ngrx/schematics - scaffolding library that provides CLI commands to generate files.    
+
+NgRx/store  
+1. Store - single source of truth.   
+2. Components suscrive to changes in the state.   
+3. Information that needs to be shared between components should go to the store.  
+4. Database in the front-end.  
+5. Provide a cache.  
+
+
+<img src="./assets/ngrx_state_management_lifecycle.png">
+
+component have connection with "ACTION" and "SELECTOR" only. 
+
+component make query to "SELECTOR" to get "STORE" data.
+component create actions with "ACTION"
+"EFFECTS" is middle man of your action and service 
+
+
+## implement ngrx store
+
+to install ngrx    
+```bash
+$ ng add @ngrx/store --no-minimal # older version will install
+$ ng add  @ngrx/store@14 # angular 14 is match for ngrx@14
+```
+
+further info https://ngrx.io/guide/store   
+
+>src/app/counter.actions.ts
+```typescript
+import { createAction } from '@ngrx/store';
+
+export const increment = createAction('[Counter Component] Increment');
+export const decrement = createAction('[Counter Component] Decrement');
+export const reset = createAction('[Counter Component] Reset');
+```
+
+
+>src/app/counter.reducer.ts
+```typescript
+import { createReducer, on } from '@ngrx/store';
+import { increment, decrement, reset } from './counter.actions';
+
+export const initialState = 0;
+
+export const counterReducer = createReducer(
+  initialState,
+  on(increment, (state) => state + 1),
+  on(decrement, (state) => state - 1),
+  on(reset, (state) => 0)
+);
+```    
+
+
+>src/app/app.module.ts (imports)
+```typescript
+    import { BrowserModule } from '@angular/platform-browser';
+    import { NgModule } from '@angular/core';
+     
+    import { AppComponent } from './app.component';
+     
+    import { StoreModule } from '@ngrx/store';
+    import { counterReducer } from './counter.reducer';
+    import { rootReducer } from './root.reducer';
+     
+    @NgModule({
+      declarations: [AppComponent],
+      imports: [
+        BrowserModule,
+        // StoreModule.forRoot({ count: counterReducer }) // ** this is without selector
+        StoreModule.forRoot(rootReducer)
+      ],
+      providers: [],
+      bootstrap: [AppComponent],
+    })
+    export class AppModule {}
+```    
+
+>src/app/root.reducer
+```typescript
+import { ActionReducerMap } from "@ngrx/store";
+import { counterReducer } from "ngrx/reducer/counter.reducer";
+import { AppState } from "ngrx/selector";
+
+export const rootReducer :ActionReducerMap<AppState> = {
+    counter: counterReducer
+}
+```    
+
+>src/app/count.selector
+```typescript
+import { createSelector } from '@ngrx/store'
+
+export interface AppState{
+    counter:number
+}
+
+export const selectState = (state : AppState) => state;
+
+export const selectCounter = createSelector(
+    selectState,
+    (state)=> state.counter
+)
+```    
+
+
+
+
+>src/app/my-counter/my-counter.component.ts
+```typescript
+    import { Component } from '@angular/core';
+    import { Store } from '@ngrx/store';
+    import { Observable } from 'rxjs';
+    import { increment, decrement, reset } from '../counter.actions';
+    import { AppState, selectCounter } from './count.selector';
+     
+    @Component({
+      selector: 'app-my-counter',
+      templateUrl: './my-counter.component.html',
+    })
+    export class MyCounterComponent {
+      count$: Observable<number>;
+     
+      //  ** this is without selector
+      // constructor(private store: Store<{ count: number }>) {
+      //   this.count$ = store.select('count');
+      // }
+
+      constructor(private store: Store<AppState>) {
+        this.count$ = store.select(selectCounter);
+      }
+     
+      increment() {
+        this.store.dispatch(increment());
+      }
+     
+      decrement() {
+        this.store.dispatch(decrement());
+      }
+     
+      reset() {
+        this.store.dispatch(reset());
+      }
+    }
+```   
+
+>src/app/my-counter/my-counter.component.html
+```html
+<button (click)="increment()">Increment</button>
+
+<div>Current Count: {{ count$ | async }}</div>
+
+<button (click)="decrement()">Decrement</button>
+
+<button (click)="reset()">Reset Counter</button>
+```   
+
+## implement ngrx selector  
+
+here just check is selector is woking or not     
+
+>src/app/my-counter/selector.spec.ts
+```typescript  
+// chatGPT example   
+import { TestBed } from '@angular/core/testing';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { selectCounter, AppState } from './counter.selector';
+
+
+describe('Counter Selectors', () => {
+    let store: MockStore<AppState>;
+    const initialState = { count: 0 };
+  
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        providers: [provideMockStore({ initialState })]
+      });
+  
+      store = TestBed.inject(MockStore);
+    });
+
+    it('should select the counter value', () => {
+        const mockState = { count: 2 };
+        store.setState(mockState);
+      
+        store.select(selectCounter).subscribe(value => {
+          expect(value).toEqual(2);
+        });
+      });
+  });
+```     
+
+
+## implement ngrx reducer    
+ 
+ // ? this is not working yet
+
+```typescript
+import { TestBed } from '@angular/core/testing';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { counterReducer } from './counter.reducer';
+import { increment } from './counter.action';
+import { AppState, selectCounter } from './counter.selector';
+
+
+describe('Counter Reducer', () => {
+  let store: MockStore<AppState>;
+  const initialState = { count: 0 };
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideMockStore({ initialState }),
+        counterReducer
+      ]
+    });
+
+    store = TestBed.inject(MockStore);
+  });
+
+  it('should increment the counter', () => {
+    const action = increment();
+    store.dispatch(action);
+
+    store.select(selectCounter).subscribe(value => {
+      expect(value).toEqual(1);
+    });
+
+    // store.select(state => state.counter).subscribe(value => {
+    //   expect(value).toEqual(1);
+    // });
+
+  });
+});
+```
+
+
+
+
+
+
+
+```bash
+$ npm install jasmine-marbles
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2160,7 +2638,6 @@ Following tutorial we are linking previous created routes on html page with two 
    <router-outlet> </router-outlet>
 </section>
 ```
-
 # Route Params
 
 * we are going to grap link parameter on 'tables' path.  
@@ -2185,7 +2662,7 @@ const routes: Routes = [
   },
   {
     path:'tables/:name', /*add> :name*/
-    component :TableComponent,
+    component :TableComponent, 
   },
   {
     path:'', /* home  */
